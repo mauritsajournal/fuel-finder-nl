@@ -24,6 +24,29 @@ let error = $state<string | null>(null);
 
 const R2_BASE = PUBLIC_R2_URL || '';
 
+// Max tiles to fetch per data type to avoid overwhelming R2
+const MAX_TILES_PER_LOAD = 20;
+
+// Concurrency limiter: fetch at most N tiles at a time
+const CONCURRENCY = 6;
+async function fetchWithConcurrency<T>(tasks: (() => Promise<T>)[]): Promise<PromiseSettledResult<T>[]> {
+	const results: PromiseSettledResult<T>[] = [];
+	let i = 0;
+	async function next(): Promise<void> {
+		while (i < tasks.length) {
+			const idx = i++;
+			try {
+				const value = await tasks[idx]();
+				results[idx] = { status: 'fulfilled', value };
+			} catch (reason) {
+				results[idx] = { status: 'rejected', reason };
+			}
+		}
+	}
+	await Promise.all(Array.from({ length: Math.min(CONCURRENCY, tasks.length) }, () => next()));
+	return results;
+}
+
 /** Get all currently loaded stations */
 export function getStations(): FuelStation[] {
 	return stations;
@@ -70,15 +93,15 @@ export async function loadVisibleTiles(bounds: {
 	if (!R2_BASE) return;
 
 	const visibleKeys = getVisibleTileKeys(bounds);
-	const toFetch = visibleKeys.filter((key) => !tileCache.has(key));
+	const toFetch = visibleKeys.filter((key) => !tileCache.has(key)).slice(0, MAX_TILES_PER_LOAD);
 
 	if (toFetch.length === 0) return;
 
 	loading = true;
 	error = null;
 
-	const results = await Promise.allSettled(
-		toFetch.map(async (key) => {
+	const results = await fetchWithConcurrency(
+		toFetch.map((key) => async () => {
 			const url = `${R2_BASE}/tiles/fuel/${key}.json`;
 			const res = await fetch(url);
 			if (!res.ok) {
@@ -120,12 +143,12 @@ export async function loadVisibleEVTiles(bounds: {
 	if (!R2_BASE) return;
 
 	const visibleKeys = getVisibleTileKeys(bounds);
-	const toFetch = visibleKeys.filter((key) => !evTileCache.has(key));
+	const toFetch = visibleKeys.filter((key) => !evTileCache.has(key)).slice(0, MAX_TILES_PER_LOAD);
 
 	if (toFetch.length === 0) return;
 
-	const results = await Promise.allSettled(
-		toFetch.map(async (key) => {
+	const results = await fetchWithConcurrency(
+		toFetch.map((key) => async () => {
 			const url = `${R2_BASE}/tiles/ev/${key}.json`;
 			const res = await fetch(url);
 			if (!res.ok) {
@@ -163,12 +186,12 @@ export async function loadVisiblePOITiles(bounds: {
 	if (!R2_BASE) return;
 
 	const visibleKeys = getVisibleTileKeys(bounds);
-	const toFetch = visibleKeys.filter((key) => !poiTileCache.has(key));
+	const toFetch = visibleKeys.filter((key) => !poiTileCache.has(key)).slice(0, MAX_TILES_PER_LOAD);
 
 	if (toFetch.length === 0) return;
 
-	const results = await Promise.allSettled(
-		toFetch.map(async (key) => {
+	const results = await fetchWithConcurrency(
+		toFetch.map((key) => async () => {
 			const url = `${R2_BASE}/tiles/poi/${key}.json`;
 			const res = await fetch(url);
 			if (!res.ok) {
