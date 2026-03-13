@@ -9,8 +9,14 @@
 	import POIMarkers from '$lib/components/POIMarkers.svelte';
 	import EVMarkers from '$lib/components/EVMarkers.svelte';
 	import RadiusSearch from '$lib/components/RadiusSearch.svelte';
+	import FavoritesDrawer from '$lib/components/FavoritesDrawer.svelte';
+	import VehicleSettings from '$lib/components/VehicleSettings.svelte';
+	import PriceAlertConfig from '$lib/components/PriceAlertConfig.svelte';
+	import PriceTrend from '$lib/components/PriceTrend.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import { isElectricFilter } from '$lib/stores/filters.svelte.js';
+	import { selectStation } from '$lib/stores/selection.svelte.js';
+	import { getStations } from '$lib/stores/data.svelte.js';
 	import { resolve } from '$app/paths';
 	import { debouncedLoadTiles, fetchMetadata } from '$lib/stores/data.svelte.js';
 
@@ -63,6 +69,26 @@
 			mapInstance?.off('moveend', loadTilesFromBounds);
 		};
 	});
+
+	// Deep link support: ?station=<id>
+	$effect(() => {
+		const stations = getStations();
+		if (stations.length === 0) return;
+
+		const params = new URLSearchParams(window.location.search);
+		const stationId = params.get('station');
+		if (!stationId) return;
+
+		const found = stations.find((s) => s.id === stationId);
+		if (found) {
+			selectStation(found);
+			mapInstance?.flyTo({ center: [found.lng, found.lat], zoom: 14, duration: 1200 });
+			// Remove param after handling
+			const url = new URL(window.location.href);
+			url.searchParams.delete('station');
+			window.history.replaceState({}, '', url.toString());
+		}
+	});
 </script>
 
 <svelte:head>
@@ -89,10 +115,22 @@
 	<TopBar onSelect={(lat, lng) => mapComponent?.flyTo(lat, lng, 13)} />
 	<LocateButton onLocate={handleLocate} />
 	<DataHealth />
-	<FilterBar />
+	<FilterBar {mapInstance} />
 
-	<!-- Radius search -->
+	<!-- Radius search (always visible) -->
 	<RadiusSearch {mapInstance} />
+
+	<!-- Favorites drawer -->
+	<FavoritesDrawer {mapInstance} />
+
+	<!-- Price trend bar -->
+	<PriceTrend />
+
+	<!-- Vehicle settings -->
+	<VehicleSettings />
+
+	<!-- Price alert config -->
+	<PriceAlertConfig />
 
 	<!-- Station detail slide-up panel -->
 	<StationPanel {mapInstance} />

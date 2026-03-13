@@ -1,6 +1,6 @@
 <script lang="ts">
 	/**
-	 * Address + radius search.
+	 * Address + radius search — always visible in top-right.
 	 * User enters an address, adjusts a radius slider, and sees the cheapest
 	 * station within that circle highlighted on the map.
 	 */
@@ -9,6 +9,7 @@
 	import { getActivePriceFuelType } from '$lib/stores/filters.svelte.js';
 	import { selectStation } from '$lib/stores/selection.svelte.js';
 	import { haversineKm } from '$lib/utils/price-colors.js';
+	import { fullTankCost } from '$lib/stores/vehicle.svelte.js';
 	import type { FuelStation } from '$lib/types.js';
 
 	interface Props {
@@ -24,7 +25,6 @@
 
 	let searchCenter = $state<{ lat: number; lng: number; label: string } | null>(null);
 	let radiusKm = $state(5);
-	let expanded = $state(false);
 
 	let stations = $derived(getStations());
 	let activeFuel = $derived(getActivePriceFuelType());
@@ -197,7 +197,7 @@
 		}
 	});
 
-	// Clean up circle when component is destroyed or search cleared
+	// Clean up circle when search cleared
 	$effect(() => {
 		if (!searchCenter) {
 			removeCircle();
@@ -205,31 +205,17 @@
 	});
 </script>
 
-<!-- Toggle button -->
+<!-- Always-visible radius search panel -->
 <div class="pointer-events-none absolute right-0 top-16 z-10 p-3 sm:p-4">
-	<button
-		onclick={() => { expanded = !expanded; }}
-		class="glass glass-hover pointer-events-auto flex h-10 w-10 items-center justify-center rounded-xl text-gray-600 transition-all duration-200 sm:h-11 sm:w-11
-			{expanded ? 'border-blue-300 text-blue-600' : ''}"
-		aria-label="Zoek op afstand"
-		title="Zoek op afstand"
-	>
-		<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-			<circle cx="12" cy="12" r="10" opacity="0.3" />
-			<circle cx="12" cy="12" r="5" />
-			<path stroke-linecap="round" d="M12 2v3M12 19v3M2 12h3M19 12h3" />
-		</svg>
-	</button>
-</div>
-
-<!-- Expanded panel -->
-{#if expanded}
-	<div class="pointer-events-none absolute right-0 top-[7.5rem] z-10 p-3 sm:p-4">
-		<div class="glass pointer-events-auto w-72 rounded-2xl p-4 shadow-lg">
-			<h3 class="mb-3 text-sm font-semibold text-gray-800">Zoek binnen straal</h3>
-
-			<!-- Address input -->
-			<div class="relative mb-3">
+	<div class="glass pointer-events-auto w-72 rounded-2xl p-3 shadow-lg">
+		<!-- Address input -->
+		<div class="relative">
+			<div class="flex items-center gap-2">
+				<svg class="h-4 w-4 shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+					<circle cx="12" cy="12" r="10" opacity="0.3" />
+					<circle cx="12" cy="12" r="5" />
+					<path stroke-linecap="round" d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+				</svg>
 				<input
 					type="text"
 					bind:value={query}
@@ -237,8 +223,8 @@
 					onkeydown={handleKeydown}
 					onblur={handleBlur}
 					onfocus={() => { if (results.length > 0) showDropdown = true; }}
-					placeholder="Adres of stad..."
-					class="w-full rounded-xl border border-gray-200 bg-white/60 px-3 py-2 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors focus:border-blue-500/50 focus:bg-white"
+					placeholder="Zoek binnen straal..."
+					class="w-full rounded-xl border border-gray-200 bg-white/60 px-3 py-1.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors focus:border-blue-500/50 focus:bg-white"
 				/>
 
 				{#if loading}
@@ -256,72 +242,71 @@
 						</svg>
 					</button>
 				{/if}
-
-				<!-- Dropdown -->
-				{#if showDropdown && results.length > 0}
-					<ul class="glass absolute inset-x-0 top-full z-50 mt-1 overflow-hidden rounded-xl shadow-lg">
-						{#each results as result, i (i)}
-							<li>
-								<button
-									class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm transition-colors
-										{selectedIndex === i ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'}"
-									onmousedown={() => selectResult(result)}
-								>
-									<svg class="mt-0.5 h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-										<path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-									</svg>
-									<div class="min-w-0 flex-1">
-										<div class="truncate">{result.label}</div>
-										{#if result.region}
-											<div class="truncate text-xs text-gray-400">{result.region}</div>
-										{/if}
-									</div>
-								</button>
-							</li>
-						{/each}
-					</ul>
-				{/if}
 			</div>
 
-			<!-- Radius slider -->
-			{#if searchCenter}
-				<div class="mb-3">
-					<div class="mb-1 flex items-center justify-between text-xs text-gray-500">
-						<span>Straal</span>
-						<span class="font-medium text-gray-700">{radiusKm} km</span>
-					</div>
-					<input
-						type="range"
-						min="1"
-						max="30"
-						step="1"
-						bind:value={radiusKm}
-						class="radius-slider w-full"
-					/>
-					<div class="mt-1 flex justify-between text-[10px] text-gray-400">
-						<span>1 km</span>
-						<span>30 km</span>
-					</div>
+			<!-- Dropdown -->
+			{#if showDropdown && results.length > 0}
+				<ul class="glass absolute inset-x-0 top-full z-50 mt-1 overflow-hidden rounded-xl shadow-lg">
+					{#each results as result, i (i)}
+						<li>
+							<button
+								class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm transition-colors
+									{selectedIndex === i ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'}"
+								onmousedown={() => selectResult(result)}
+							>
+								<svg class="mt-0.5 h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+									<path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+								</svg>
+								<div class="min-w-0 flex-1">
+									<div class="truncate">{result.label}</div>
+									{#if result.region}
+										<div class="truncate text-xs text-gray-400">{result.region}</div>
+									{/if}
+								</div>
+							</button>
+						</li>
+					{/each}
+				</ul>
+			{/if}
+		</div>
+
+		<!-- Radius slider + result (shown after search) -->
+		{#if searchCenter}
+			<div class="mt-3">
+				<div class="mb-1 flex items-center justify-between text-xs text-gray-500">
+					<span>Straal</span>
+					<span class="font-medium text-gray-700">{radiusKm} km</span>
 				</div>
+				<input
+					type="range"
+					min="1"
+					max="30"
+					step="1"
+					bind:value={radiusKm}
+					class="w-full"
+				/>
 
 				<!-- Result -->
-				<div class="rounded-xl border border-gray-100 bg-gray-50 p-3">
-					<div class="mb-1 text-xs text-gray-500">
+				<div class="mt-2 rounded-xl border border-gray-100 bg-gray-50 p-2.5">
+					<div class="mb-1 text-[11px] text-gray-500">
 						{stationsInRadius} station{stationsInRadius !== 1 ? 's' : ''} binnen {radiusKm} km
 					</div>
 
 					{#if cheapestInRadius}
 						{@const price = cheapestInRadius.prices.find((p) => p.fuelType === activeFuel)?.price}
 						<div class="flex items-center justify-between">
-							<div>
-								<div class="text-sm font-semibold text-gray-800">{cheapestInRadius.name}</div>
+							<div class="min-w-0 flex-1">
+								<div class="truncate text-sm font-semibold text-gray-800">{cheapestInRadius.name}</div>
 								<div class="text-xs text-gray-500">{cheapestInRadius.brand}</div>
 							</div>
 							{#if price}
-								<div class="text-right">
+								<div class="text-right shrink-0">
 									<div class="text-base font-bold text-green-600">
 										&euro; {price.toFixed(3).replace('.', ',')}
+									</div>
+									<div class="text-[10px] text-gray-400">
+										tank &euro; {fullTankCost(price).toFixed(2).replace('.', ',')}
 									</div>
 								</div>
 							{/if}
@@ -336,7 +321,7 @@
 						<div class="text-sm text-gray-400">Geen stations gevonden</div>
 					{/if}
 				</div>
-			{/if}
-		</div>
+			</div>
+		{/if}
 	</div>
-{/if}
+</div>
