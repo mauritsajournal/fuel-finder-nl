@@ -5,11 +5,16 @@
 
 const TILE_SIZE = 0.5;
 
+/** Format a tile coordinate to always include one decimal (e.g. 52 -> "52.0", 52.5 -> "52.5") */
+function formatCoord(n: number): string {
+	return Number.isInteger(n) ? n.toFixed(1) : String(n);
+}
+
 /** Calculate tile key from coordinates */
 export function tileKey(lat: number, lng: number): string {
 	const tileLat = Math.floor(lat / TILE_SIZE) * TILE_SIZE;
 	const tileLng = Math.floor(lng / TILE_SIZE) * TILE_SIZE;
-	return `${tileLat}_${tileLng}`;
+	return `${formatCoord(tileLat)}_${formatCoord(tileLng)}`;
 }
 
 /** Get all tile keys visible in a bounding box */
@@ -28,7 +33,7 @@ export function getVisibleTileKeys(bounds: {
 
 	for (let lat = startLat; lat <= endLat; lat += TILE_SIZE) {
 		for (let lng = startLng; lng <= endLng; lng += TILE_SIZE) {
-			keys.push(`${lat}_${lng}`);
+			keys.push(`${formatCoord(lat)}_${formatCoord(lng)}`);
 		}
 	}
 
