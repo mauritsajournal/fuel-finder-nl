@@ -63,6 +63,7 @@ jobs:
         continue-on-error: true
 
       - name: Retry EV fetch on failure
+        id: retry_ev
         if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_ev == 'true') && steps.fetch_ev.outcome == 'failure'
         run: |
           echo "EV fetch failed, retrying in 30s..."
@@ -72,7 +73,7 @@ jobs:
           OCM_API_KEY: ${{ secrets.OCM_API_KEY }}
 
       - name: Split EV data into tiles
-        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_ev == 'true') && steps.fetch_ev.outcome == 'success'
+        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_ev == 'true') && (steps.fetch_ev.outcome == 'success' || steps.retry_ev.outcome == 'success')
         run: python scripts/tile_data.py --data-type ev
 
       # --- POI data (daily or manual) ---
@@ -83,6 +84,7 @@ jobs:
         continue-on-error: true
 
       - name: Retry POI fetch on failure
+        id: retry_poi
         if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_poi == 'true') && steps.fetch_poi.outcome == 'failure'
         run: |
           echo "POI fetch failed, retrying in 30s..."
@@ -90,7 +92,7 @@ jobs:
           python scripts/fetch_poi.py
 
       - name: Split POI data into tiles
-        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_poi == 'true') && steps.fetch_poi.outcome == 'success'
+        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_poi == 'true') && (steps.fetch_poi.outcome == 'success' || steps.retry_poi.outcome == 'success')
         run: python scripts/tile_data.py --data-type poi
 
       # --- Upload to R2 ---
@@ -105,7 +107,7 @@ jobs:
           R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
 
       - name: Upload EV tiles to R2
-        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_ev == 'true') && steps.fetch_ev.outcome == 'success'
+        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_ev == 'true') && (steps.fetch_ev.outcome == 'success' || steps.retry_ev.outcome == 'success')
         run: python scripts/upload_to_r2.py data/output/tiles/ev --prefix tiles/ev
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -114,7 +116,7 @@ jobs:
           R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
 
       - name: Upload POI tiles to R2
-        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_poi == 'true') && steps.fetch_poi.outcome == 'success'
+        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_poi == 'true') && (steps.fetch_poi.outcome == 'success' || steps.retry_poi.outcome == 'success')
         run: python scripts/upload_to_r2.py data/output/tiles/poi --prefix tiles/poi
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
