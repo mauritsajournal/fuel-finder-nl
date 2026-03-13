@@ -4,7 +4,7 @@
  * Includes caching in sessionStorage and fallback to straight-line distance.
  */
 
-import { env } from '$env/dynamic/public';
+import { PUBLIC_WORKER_URL } from '$env/static/public';
 
 export interface RouteResult {
 	/** Route geometry as GeoJSON coordinates */
@@ -17,7 +17,7 @@ export interface RouteResult {
 	isFallback: boolean;
 }
 
-const WORKER_URL = env.PUBLIC_WORKER_URL || '';
+const WORKER_URL = PUBLIC_WORKER_URL || '';
 const CACHE_TTL = 3600_000; // 1 hour in ms
 
 /** Debounce state to prevent duplicate requests */

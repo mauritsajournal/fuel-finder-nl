@@ -4,7 +4,7 @@
  * scoped to the Netherlands.
  */
 
-import { env } from '$env/dynamic/public';
+import { PUBLIC_WORKER_URL } from '$env/static/public';
 
 export interface GeocodingResult {
 	label: string;
@@ -13,7 +13,7 @@ export interface GeocodingResult {
 	lng: number;
 }
 
-const WORKER_URL = env.PUBLIC_WORKER_URL || '';
+const WORKER_URL = PUBLIC_WORKER_URL || '';
 
 /**
  * Search for addresses/cities in the Netherlands via the Worker geocoding proxy.

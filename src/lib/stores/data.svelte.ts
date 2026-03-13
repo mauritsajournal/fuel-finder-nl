@@ -6,7 +6,7 @@
 
 import type { FuelStation, EVCharger, POI, Metadata } from '$lib/types.js';
 import { getVisibleTileKeys } from '$lib/utils/tiles.js';
-import { env } from '$env/dynamic/public';
+import { PUBLIC_R2_URL } from '$env/static/public';
 import { SvelteMap } from 'svelte/reactivity';
 
 // Tile cache: key -> stations
@@ -22,7 +22,7 @@ let metadata = $state<Metadata | null>(null);
 let loading = $state(false);
 let error = $state<string | null>(null);
 
-const R2_BASE = env.PUBLIC_R2_URL || '';
+const R2_BASE = PUBLIC_R2_URL || '';
 
 /** Get all currently loaded stations */
 export function getStations(): FuelStation[] {
