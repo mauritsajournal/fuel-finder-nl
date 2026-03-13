@@ -712,7 +712,8 @@ SvelteKit has `@vite-pwa/sveltekit` plugin, or manual service worker setup. For 
 
 ---
 
-## [ ] T-021 -- Performance optimization and polish
+## [x] T-021 -- Performance optimization and polish
+> DONE 2026-03-13 -- Toast component, privacy page, preconnect hints, dark popup styling, mobile polish.
 
 **Phase:** 3 (Polish)
 **Component:** Frontend
