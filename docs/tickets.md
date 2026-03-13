@@ -554,7 +554,8 @@ POIs are supplementary data -- they should not dominate the map visually. Use sm
 
 ---
 
-## [ ] T-016 -- Route calculation via Worker proxy
+## [x] T-016 -- Route calculation via Worker proxy
+> DONE 2026-03-13 -- Routing service with polyline display, caching, fallback. Navigate button in StationPanel.
 
 **Phase:** 2 (Full Data)
 **Component:** Frontend - Routing
