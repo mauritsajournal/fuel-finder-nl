@@ -619,7 +619,8 @@ Use Svelte 5 `$state` for filter state. When fuel type changes, update the MapLi
 
 ---
 
-## [ ] T-018 -- Address/city search with geocoding
+## [x] T-018 -- Address/city search with geocoding
+> DONE 2026-03-13 -- Geocoding service via Worker proxy, debounced search with dropdown, keyboard nav, ARIA accessible.
 
 **Phase:** 2 (Full Data)
 **Component:** Frontend - UI
