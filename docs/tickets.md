@@ -50,7 +50,8 @@ Install: `@sveltejs/adapter-static`, `tailwindcss`, `@tailwindcss/vite`, `maplib
 
 ---
 
-## [ ] T-002 -- GitHub Pages deployment pipeline
+## [x] T-002 -- GitHub Pages deployment pipeline
+> DONE 2026-03-13 -- deploy.yml with pnpm/Node 22, GitHub Pages enabled via API.
 
 **Phase:** 1 (MVP)
 **Component:** CI/CD
