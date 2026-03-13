@@ -1,0 +1,5 @@
+name = "fuel-finder-routing"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+# ORS_API_KEY must be set via: wrangler secret put ORS_API_KEY
