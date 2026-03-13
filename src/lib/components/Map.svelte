@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { darkMapStyle } from '$lib/styles/map-dark-style.js';
+	import { lightMapStyle } from '$lib/styles/map-light-style.js';
 
 	let mapContainer: HTMLDivElement;
 	let map: import('maplibre-gl').Map | null = $state(null);
@@ -85,7 +85,7 @@
 
 			instance = new maplibregl.Map({
 				container: mapContainer,
-				style: darkMapStyle,
+				style: lightMapStyle,
 				center: NL_CENTER,
 				zoom: NL_ZOOM,
 				minZoom: 6,

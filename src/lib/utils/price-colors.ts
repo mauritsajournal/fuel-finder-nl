@@ -31,6 +31,37 @@ export function calculateThresholds(
 	return { p25, p75 };
 }
 
+/** Haversine distance between two points in km */
+export function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+	const R = 6371;
+	const dLat = ((lat2 - lat1) * Math.PI) / 180;
+	const dLng = ((lng2 - lng1) * Math.PI) / 180;
+	const a =
+		Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+		Math.cos((lat1 * Math.PI) / 180) *
+			Math.cos((lat2 * Math.PI) / 180) *
+			Math.sin(dLng / 2) *
+			Math.sin(dLng / 2);
+	return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+/** Calculate local price thresholds for a station based on nearby stations (within radiusKm) */
+export function calculateLocalThresholds(
+	station: FuelStation,
+	allStations: FuelStation[],
+	fuelType: FuelType,
+	radiusKm = 15
+): { p25: number; p75: number } | null {
+	const nearby = allStations.filter(
+		(s) => haversineKm(station.lat, station.lng, s.lat, s.lng) <= radiusKm
+	);
+
+	// Need at least 6 neighbors for meaningful local comparison
+	if (nearby.length < 6) return calculateThresholds(allStations, fuelType);
+
+	return calculateThresholds(nearby, fuelType);
+}
+
 /** Get price category for a station */
 export function getPriceCategory(
 	station: FuelStation,

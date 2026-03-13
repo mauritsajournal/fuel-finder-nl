@@ -3,13 +3,13 @@
 	 * Fuel station markers on the map.
 	 *
 	 * Shows fuel stations as colored circle markers.
-	 * Green = cheapest 25%, Yellow = middle 50%, Red = expensive 25%.
+	 * Green = cheapest 25% locally, Yellow = middle 50%, Red = expensive 25%.
 	 * Clustering at low zoom levels. Click to select station.
 	 */
 	import { getStations } from '$lib/stores/data.svelte.js';
 	import { selectStation } from '$lib/stores/selection.svelte.js';
 	import { getActivePriceFuelType } from '$lib/stores/filters.svelte.js';
-	import { calculateThresholds, PRICE_COLORS } from '$lib/utils/price-colors.js';
+	import { calculateLocalThresholds, PRICE_COLORS } from '$lib/utils/price-colors.js';
 	import type { FuelStation, FuelType } from '$lib/types.js';
 
 	interface Props {
@@ -27,14 +27,15 @@
 	}
 
 	function buildGeoJSON(stations: FuelStation[], fuelType: FuelType) {
-		const thresholds = calculateThresholds(stations, fuelType);
-
 		return {
 			type: 'FeatureCollection' as const,
 			features: stations
 				.filter((s) => getPrice(s, fuelType) !== null)
 				.map((station) => {
 					const price = getPrice(station, fuelType)!;
+
+					// Local price comparison: thresholds based on nearby stations
+					const thresholds = calculateLocalThresholds(station, stations, fuelType, 15);
 					let category: 'cheap' | 'average' | 'expensive' = 'average';
 					if (thresholds) {
 						if (price <= thresholds.p25) category = 'cheap';
@@ -79,10 +80,10 @@
 			filter: ['has', 'point_count'],
 			paint: {
 				'circle-color': '#eab308',
-				'circle-radius': ['step', ['get', 'point_count'], 14, 10, 18, 50, 24],
-				'circle-opacity': 0.7,
+				'circle-radius': ['step', ['get', 'point_count'], 16, 10, 22, 50, 28],
+				'circle-opacity': 0.8,
 				'circle-stroke-width': 2,
-				'circle-stroke-color': 'rgba(234, 179, 8, 0.3)'
+				'circle-stroke-color': 'rgba(234, 179, 8, 0.4)'
 			}
 		});
 
@@ -94,7 +95,7 @@
 			filter: ['has', 'point_count'],
 			layout: {
 				'text-field': '{point_count_abbreviated}',
-				'text-size': 11,
+				'text-size': 12,
 				'text-font': ['Noto Sans Bold']
 			},
 			paint: {
@@ -102,7 +103,7 @@
 			}
 		});
 
-		// Individual station markers
+		// Individual station markers — bigger at zoom
 		mapInstance.addLayer({
 			id: 'fuel-markers',
 			type: 'circle',
@@ -110,32 +111,32 @@
 			filter: ['!', ['has', 'point_count']],
 			paint: {
 				'circle-color': ['get', 'color'],
-				'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 3, 10, 5, 14, 8],
-				'circle-opacity': 0.85,
-				'circle-stroke-width': 1.5,
-				'circle-stroke-color': 'rgba(255,255,255,0.15)',
+				'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 4, 10, 7, 13, 10, 16, 14],
+				'circle-opacity': 0.9,
+				'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 7, 1, 13, 2, 16, 2.5],
+				'circle-stroke-color': 'rgba(255,255,255,0.7)',
 				'circle-pitch-alignment': 'map'
 			}
 		});
 
-		// Price labels at higher zoom
+		// Price labels — visible earlier, larger, light-theme colors
 		mapInstance.addLayer({
 			id: 'fuel-price-labels',
 			type: 'symbol',
 			source: 'fuel-stations',
 			filter: ['!', ['has', 'point_count']],
-			minzoom: 13,
+			minzoom: 11,
 			layout: {
 				'text-field': ['number-format', ['get', 'price'], { 'min-fraction-digits': 3, 'max-fraction-digits': 3 }],
-				'text-size': 10,
-				'text-offset': [0, 1.5],
+				'text-size': ['interpolate', ['linear'], ['zoom'], 11, 9, 13, 12, 16, 15],
+				'text-offset': [0, 1.8],
 				'text-allow-overlap': false,
-				'text-font': ['Noto Sans Regular']
+				'text-font': ['Noto Sans Bold']
 			},
 			paint: {
-				'text-color': '#cbd5e1',
-				'text-halo-color': '#0f172a',
-				'text-halo-width': 1
+				'text-color': '#374151',
+				'text-halo-color': '#ffffff',
+				'text-halo-width': 1.5
 			}
 		});
 

@@ -78,7 +78,7 @@
 <div class="pointer-events-none absolute inset-x-0 top-0 z-10 p-3 sm:p-4">
 	<div class="glass pointer-events-auto mx-auto flex max-w-lg items-center gap-3 rounded-2xl px-4 py-2.5 transition-all duration-200">
 		<!-- App name -->
-		<h1 class="shrink-0 text-sm font-semibold text-white sm:text-base">
+		<h1 class="shrink-0 text-sm font-semibold text-gray-800 sm:text-base">
 			Fuel Finder NL
 		</h1>
 
@@ -92,7 +92,7 @@
 				onblur={handleBlur}
 				onfocus={() => { if (results.length > 0) showDropdown = true; }}
 				placeholder="Zoek stad of adres..."
-				class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder-slate-500 outline-none transition-colors focus:border-blue-500/50 focus:bg-white/8"
+				class="w-full rounded-xl border border-gray-200 bg-white/60 px-3 py-1.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition-colors focus:border-blue-500/50 focus:bg-white"
 				role="combobox"
 				aria-expanded={showDropdown}
 				aria-haspopup="listbox"
@@ -108,7 +108,7 @@
 			{:else if searchQuery}
 				<button
 					onclick={clearSearch}
-					class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
+					class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
 					aria-label="Wis zoekveld"
 				>
 					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,7 +132,7 @@
 						>
 							<button
 								class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm transition-colors
-									{selectedIndex === i ? 'bg-blue-500/20 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'}"
+									{selectedIndex === i ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'}"
 								onmousedown={() => selectResult(result)}
 							>
 								<svg class="mt-0.5 h-4 w-4 shrink-0 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">

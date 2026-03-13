@@ -1,15 +1,15 @@
 @import 'tailwindcss';
 
 :root {
-	--color-bg: #0f172a;
-	--color-bg-card: rgba(255, 255, 255, 0.05);
-	--color-border: rgba(255, 255, 255, 0.1);
-	--color-text: #f1f5f9;
-	--color-text-muted: #94a3b8;
-	--color-accent: #3b82f6;
-	--color-success: #22c55e;
-	--color-warning: #eab308;
-	--color-danger: #ef4444;
+	--color-bg: #f0f0f0;
+	--color-bg-card: rgba(255, 255, 255, 0.85);
+	--color-border: rgba(0, 0, 0, 0.1);
+	--color-text: #1f2937;
+	--color-text-muted: #6b7280;
+	--color-accent: #2563eb;
+	--color-success: #16a34a;
+	--color-warning: #ca8a04;
+	--color-danger: #dc2626;
 }
 
 html,
@@ -31,27 +31,27 @@ body {
 		sans-serif;
 }
 
-/* Glassmorphism utility */
+/* Glassmorphism utility - light theme */
 .glass {
-	background: rgba(255, 255, 255, 0.05);
+	background: rgba(255, 255, 255, 0.85);
 	backdrop-filter: blur(16px);
 	-webkit-backdrop-filter: blur(16px);
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 .glass-hover:hover {
-	background: rgba(255, 255, 255, 0.08);
-	border-color: rgba(255, 255, 255, 0.15);
+	background: rgba(255, 255, 255, 0.92);
+	border-color: rgba(0, 0, 0, 0.12);
 }
 
 /* Loading skeleton */
 .skeleton {
 	background: linear-gradient(
 		90deg,
-		rgba(255, 255, 255, 0.03) 25%,
-		rgba(255, 255, 255, 0.08) 50%,
-		rgba(255, 255, 255, 0.03) 75%
+		rgba(0, 0, 0, 0.03) 25%,
+		rgba(0, 0, 0, 0.06) 50%,
+		rgba(0, 0, 0, 0.03) 75%
 	);
 	background-size: 200% 100%;
 	animation: skeleton-pulse 1.5s ease-in-out infinite;
@@ -82,14 +82,14 @@ body {
 	transition: transform 200ms ease-in;
 }
 
-/* MapLibre overrides for dark theme */
+/* MapLibre overrides for light theme */
 .maplibregl-ctrl-group {
-	background: rgba(255, 255, 255, 0.05) !important;
+	background: rgba(255, 255, 255, 0.9) !important;
 	backdrop-filter: blur(16px) !important;
 	-webkit-backdrop-filter: blur(16px) !important;
-	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+	border: 1px solid rgba(0, 0, 0, 0.08) !important;
 	border-radius: 0.75rem !important;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
 .maplibregl-ctrl-group button {
@@ -98,48 +98,44 @@ body {
 }
 
 .maplibregl-ctrl-group button + button {
-	border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.maplibregl-ctrl-group button .maplibregl-ctrl-icon {
-	filter: invert(1) brightness(0.8);
+	border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .maplibregl-ctrl-attrib {
-	background: rgba(0, 0, 0, 0.4) !important;
-	color: #64748b !important;
+	background: rgba(255, 255, 255, 0.7) !important;
+	color: #9ca3af !important;
 	font-size: 10px !important;
 }
 
 .maplibregl-ctrl-attrib a {
-	color: #94a3b8 !important;
+	color: #6b7280 !important;
 }
 
-/* Popup styling for dark theme */
+/* Popup styling for light theme */
 .maplibregl-popup-content {
-	background: rgba(15, 23, 42, 0.95) !important;
+	background: rgba(255, 255, 255, 0.95) !important;
 	backdrop-filter: blur(16px) !important;
 	-webkit-backdrop-filter: blur(16px) !important;
-	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+	border: 1px solid rgba(0, 0, 0, 0.08) !important;
 	border-radius: 0.75rem !important;
-	color: #e2e8f0 !important;
+	color: #1f2937 !important;
 	padding: 0.75rem !important;
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12) !important;
 }
 
 .maplibregl-popup-close-button {
-	color: #94a3b8 !important;
+	color: #9ca3af !important;
 	font-size: 16px !important;
 	padding: 2px 6px !important;
 }
 
 .maplibregl-popup-close-button:hover {
-	color: #ffffff !important;
+	color: #1f2937 !important;
 	background: transparent !important;
 }
 
 .maplibregl-popup-tip {
-	border-top-color: rgba(15, 23, 42, 0.95) !important;
+	border-top-color: rgba(255, 255, 255, 0.95) !important;
 }
 
 /* Smooth transitions for interactive elements */
@@ -151,4 +147,36 @@ a {
 /* Prevent overscroll bounce on mobile */
 html {
 	overscroll-behavior: none;
+}
+
+/* Range slider styling */
+input[type='range'] {
+	-webkit-appearance: none;
+	appearance: none;
+	height: 6px;
+	border-radius: 3px;
+	background: #e5e7eb;
+	outline: none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: #2563eb;
+	cursor: pointer;
+	border: 2px solid white;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type='range']::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: #2563eb;
+	cursor: pointer;
+	border: 2px solid white;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }

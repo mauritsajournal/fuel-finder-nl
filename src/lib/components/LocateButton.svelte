@@ -27,7 +27,7 @@
 		onclick={handleClick}
 		disabled={location.loading}
 		class="glass glass-hover pointer-events-auto flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-200 sm:h-11 sm:w-11
-			{located ? 'border-blue-500/30 text-blue-400' : 'text-slate-400'}"
+			{located ? 'border-blue-300 text-blue-600' : 'text-gray-500'}"
 		aria-label="Mijn locatie"
 		title="Mijn locatie"
 	>
@@ -48,7 +48,7 @@
 
 	<!-- Error toast -->
 	{#if location.error}
-		<div class="glass pointer-events-auto mt-2 rounded-xl px-3 py-2 text-xs text-red-400">
+		<div class="glass pointer-events-auto mt-2 rounded-xl px-3 py-2 text-xs text-red-600">
 			{location.error}
 		</div>
 	{/if}

@@ -41,7 +41,7 @@
 		{#if locationAvailable}
 			<button
 				onclick={toggleSort}
-				class="glass flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium text-slate-300 transition-all duration-200 hover:text-white"
+				class="glass flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium text-gray-600 transition-all duration-200 hover:text-gray-800"
 				aria-label="Sorteer op {currentSort === 'cheapest' ? 'afstand' : 'prijs'}"
 			>
 				{#if currentSort === 'cheapest'}
@@ -66,8 +66,8 @@
 					onclick={() => selectFilter(filter.id)}
 					class="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all duration-200 sm:text-sm
 						{activeFilter === filter.id
-							? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-							: 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'}"
+							? 'bg-blue-600 text-white border border-blue-600 shadow-sm'
+							: 'text-gray-500 hover:text-gray-800 hover:bg-gray-100 border border-transparent'}"
 					aria-pressed={activeFilter === filter.id}
 				>
 					<span>{filter.icon}</span>

@@ -8,6 +8,7 @@
 	import StationMarkers from '$lib/components/StationMarkers.svelte';
 	import POIMarkers from '$lib/components/POIMarkers.svelte';
 	import EVMarkers from '$lib/components/EVMarkers.svelte';
+	import RadiusSearch from '$lib/components/RadiusSearch.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import { isElectricFilter } from '$lib/stores/filters.svelte.js';
 	import { resolve } from '$app/paths';
@@ -71,7 +72,7 @@
 	<meta property="og:type" content="website" />
 </svelte:head>
 
-<div class="relative h-screen w-screen overflow-hidden bg-[#0c1220]">
+<div class="relative h-screen w-screen overflow-hidden bg-[#f0f0f0]">
 	<!-- Full-screen map background -->
 	<Map bind:this={mapComponent} />
 
@@ -90,6 +91,9 @@
 	<DataHealth />
 	<FilterBar />
 
+	<!-- Radius search -->
+	<RadiusSearch {mapInstance} />
+
 	<!-- Station detail slide-up panel -->
 	<StationPanel {mapInstance} />
 
@@ -99,7 +103,7 @@
 	<!-- Privacy link -->
 	<a
 		href={resolve('/privacy')}
-		class="absolute bottom-16 left-3 z-10 text-[10px] text-slate-600 transition-colors hover:text-slate-400 sm:bottom-3"
+		class="absolute bottom-16 left-3 z-10 text-[10px] text-gray-400 transition-colors hover:text-gray-600 sm:bottom-3"
 	>
 		Privacy
 	</a>

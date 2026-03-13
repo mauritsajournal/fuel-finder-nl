@@ -144,7 +144,7 @@
 {#if visible && station}
 	<!-- Backdrop -->
 	<button
-		class="fixed inset-0 z-20 bg-black/30 transition-opacity duration-200"
+		class="fixed inset-0 z-20 bg-black/20 transition-opacity duration-200"
 		onclick={handleBackdropClick}
 		aria-label="Sluit paneel"
 		tabindex="-1"
@@ -152,24 +152,24 @@
 
 	<!-- Slide-up panel -->
 	<div
-		class="glass fixed inset-x-0 bottom-0 z-30 max-h-[70vh] overflow-y-auto rounded-t-3xl transition-transform duration-250 ease-out"
+		class="glass fixed inset-x-0 bottom-0 z-30 max-h-[70vh] overflow-y-auto rounded-t-3xl shadow-lg transition-transform duration-250 ease-out"
 		role="dialog"
 		aria-label="Station details"
 	>
 		<!-- Drag handle -->
 		<div class="flex justify-center pb-2 pt-3">
-			<div class="h-1 w-10 rounded-full bg-white/20"></div>
+			<div class="h-1 w-10 rounded-full bg-gray-300"></div>
 		</div>
 
 		<div class="px-5 pb-6">
 			<!-- Header -->
 			<div class="mb-4 flex items-start justify-between">
 				<div>
-					<h2 class="text-lg font-bold text-white">{station.name}</h2>
-					<p class="text-sm text-slate-400">{station.brand}</p>
+					<h2 class="text-lg font-bold text-gray-800">{station.name}</h2>
+					<p class="text-sm text-gray-500">{station.brand}</p>
 				</div>
 				{#if distance !== null}
-					<span class="rounded-lg bg-blue-500/20 px-2.5 py-1 text-xs font-medium text-blue-400">
+					<span class="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-600">
 						{distance < 1 ? `${Math.round(distance * 1000)} m` : `${distance.toFixed(1)} km`}
 					</span>
 				{/if}
@@ -178,11 +178,11 @@
 			<!-- Prices -->
 			<div class="mb-4 grid grid-cols-2 gap-2">
 				{#each station.prices as price (price.fuelType)}
-					<div class="rounded-xl border border-white/5 bg-white/3 px-3 py-2">
-						<span class="text-xs text-slate-400">{fuelLabel(price.fuelType)}</span>
-						<div class="text-base font-semibold text-white">{formatPrice(price.price)}</div>
+					<div class="rounded-xl border border-gray-100 bg-gray-50 px-3 py-2">
+						<span class="text-xs text-gray-500">{fuelLabel(price.fuelType)}</span>
+						<div class="text-base font-semibold text-gray-800">{formatPrice(price.price)}</div>
 						{#if avgPrices !== null && price.fuelType === activeFuelType}
-							<span class="text-[10px] text-slate-500">
+							<span class="text-[10px] text-gray-400">
 								{priceDiffText(price.price, avgPrices)}
 							</span>
 						{/if}
@@ -191,7 +191,7 @@
 			</div>
 
 			<!-- Address -->
-			<div class="mb-4 text-sm text-slate-300">
+			<div class="mb-4 text-sm text-gray-600">
 				{#if station.address.street}
 					<p>{station.address.street}</p>
 				{/if}
@@ -204,7 +204,7 @@
 			{#if station.facilities.length > 0}
 				<div class="mb-4 flex flex-wrap gap-2">
 					{#each station.facilities as facility, i (i)}
-						<span class="rounded-lg border border-white/5 bg-white/3 px-2 py-1 text-xs text-slate-400">
+						<span class="rounded-lg border border-gray-100 bg-gray-50 px-2 py-1 text-xs text-gray-500">
 							{facility}
 						</span>
 					{/each}
@@ -213,21 +213,21 @@
 
 			<!-- Route info -->
 			{#if routeResult}
-				<div class="mb-4 flex items-center gap-3 rounded-xl border border-blue-500/20 bg-blue-500/10 px-3 py-2">
-					<svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+				<div class="mb-4 flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2">
+					<svg class="h-5 w-5 shrink-0 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
 						<path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
 					</svg>
 					<div class="flex-1">
-						<span class="text-sm font-medium text-blue-300">
+						<span class="text-sm font-medium text-blue-700">
 							{formatDistance(routeResult.distanceM)} &middot; {formatDuration(routeResult.durationS)}
 						</span>
 						{#if routeResult.isFallback}
-							<span class="ml-1 text-[10px] text-slate-500">(schatting)</span>
+							<span class="ml-1 text-[10px] text-gray-400">(schatting)</span>
 						{/if}
 					</div>
 					<button
 						onclick={() => { routeResult = null; if (mapInstance) clearRoute(mapInstance); }}
-						class="text-slate-500 hover:text-white"
+						class="text-gray-400 hover:text-gray-700"
 						aria-label="Route wissen"
 					>
 						<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -238,7 +238,7 @@
 			{/if}
 
 			{#if routeError}
-				<div class="mb-4 rounded-xl bg-red-500/10 px-3 py-2 text-sm text-red-400">
+				<div class="mb-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-600">
 					{routeError}
 				</div>
 			{/if}
@@ -249,10 +249,10 @@
 					<button
 						onclick={calculateRouteToStation}
 						disabled={routeLoading}
-						class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600/20 py-2.5 text-sm font-medium text-green-400 transition-colors hover:bg-green-600/30 disabled:opacity-50"
+						class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:opacity-50"
 					>
 						{#if routeLoading}
-							<div class="h-4 w-4 animate-spin rounded-full border-2 border-green-400/30 border-t-green-400"></div>
+							<div class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
 							Berekenen...
 						{:else}
 							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -264,7 +264,7 @@
 				{/if}
 				<button
 					onclick={openGoogleMaps}
-					class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600/20 py-2.5 text-sm font-medium text-blue-400 transition-colors hover:bg-blue-600/30"
+					class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
 				>
 					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
 						<path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -274,7 +274,7 @@
 				</button>
 				<button
 					onclick={openWaze}
-					class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white/5 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/10"
+					class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gray-100 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
 				>
 					Waze
 				</button>
