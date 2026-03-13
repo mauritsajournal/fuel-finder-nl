@@ -3,6 +3,7 @@
 	import TopBar from '$lib/components/TopBar.svelte';
 	import FilterBar from '$lib/components/FilterBar.svelte';
 	import LocateButton from '$lib/components/LocateButton.svelte';
+	import StationPanel from '$lib/components/StationPanel.svelte';
 
 	let mapComponent: Map;
 
@@ -27,4 +28,7 @@
 	<TopBar />
 	<LocateButton onLocate={handleLocate} />
 	<FilterBar />
+
+	<!-- Station detail slide-up panel -->
+	<StationPanel />
 </div>
