@@ -55,15 +55,16 @@ def fetch_geobox(session: requests.Session, south: float, west: float, north: fl
 
     data = response.json()
 
-    # API returns list of POI objects
-    if isinstance(data, list):
+    # API returns { value: [...stations], totalResults: N, ... }
+    if isinstance(data, dict) and "value" in data:
+        return data["value"]
+    elif isinstance(data, list):
         return data
     elif isinstance(data, dict) and "pois" in data:
         return data["pois"]
     elif isinstance(data, dict) and "locations" in data:
         return data["locations"]
     else:
-        # Try to find the list of stations in the response
         print(f"  Warning: unexpected response structure. Keys: {list(data.keys()) if isinstance(data, dict) else type(data)}", file=sys.stderr)
         return data if isinstance(data, list) else []
 
@@ -90,14 +91,17 @@ def normalize_station(raw: dict) -> dict | None:
         if not (50.5 <= lat <= 53.8 and 3.0 <= lng <= 7.5):
             return None
 
-        # Extract name and brand
+        # Extract name and brand (API has no separate brand field, extract from title)
         name = raw.get("title", raw.get("name", "Onbekend"))
-        brand = raw.get("brand", raw.get("operator", name.split()[0] if name else ""))
+        brand = raw.get("brand", raw.get("operator", ""))
+        if not brand and name:
+            # First word of title is typically the brand (e.g., "BP Spaanse Polder")
+            brand = name.split()[0] if name.split() else ""
 
         # Extract address
         address_raw = raw.get("address", {})
         address = {
-            "street": address_raw.get("street", address_raw.get("streetName", "")),
+            "street": address_raw.get("streetAddress", address_raw.get("street", address_raw.get("streetName", ""))),
             "city": address_raw.get("city", address_raw.get("place", "")),
             "postalCode": address_raw.get("postalCode", address_raw.get("zipCode", "")),
         }
@@ -106,7 +110,7 @@ def normalize_station(raw: dict) -> dict | None:
         prices = []
         price_data = raw.get("prices", raw.get("fuelPrices", []))
         for p in price_data:
-            fuel_type = normalize_fuel_type(p.get("fuelType", p.get("type", "")))
+            fuel_type = normalize_fuel_type(p.get("fuelType", p.get("fuelName", p.get("type", ""))))
             value = p.get("value", p.get("price"))
             if fuel_type and value is not None:
                 try:
@@ -148,13 +152,18 @@ def normalize_fuel_type(raw_type: str) -> str | None:
     mapping = {
         "euro95": "euro95",
         "euro 95": "euro95",
+        "euro 95 (e10)": "euro95",
         "e10": "euro95",
         "super": "euro95",
         "euro98": "euro98",
         "euro 98": "euro98",
         "super plus": "euro98",
+        "super plus 98 (e5)": "euro98",
         "v-power": "euro98",
         "diesel": "diesel",
+        "diesel (b7)": "diesel",
+        "diesel_special": "diesel",
+        "premium diesel": "diesel",
         "b7": "diesel",
         "lpg": "lpg",
         "autogas": "lpg",
