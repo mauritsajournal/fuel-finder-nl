@@ -4,6 +4,7 @@
 	import FilterBar from '$lib/components/FilterBar.svelte';
 	import LocateButton from '$lib/components/LocateButton.svelte';
 	import StationPanel from '$lib/components/StationPanel.svelte';
+	import DataHealth from '$lib/components/DataHealth.svelte';
 
 	let mapComponent: Map;
 
@@ -27,6 +28,7 @@
 	<!-- Glass overlay panels -->
 	<TopBar />
 	<LocateButton onLocate={handleLocate} />
+	<DataHealth />
 	<FilterBar />
 
 	<!-- Station detail slide-up panel -->
