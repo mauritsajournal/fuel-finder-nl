@@ -324,7 +324,8 @@ Use MapLibre's built-in `GeolocateControl` or custom implementation. For glassmo
 
 ---
 
-## [ ] T-010 -- Glassmorphism dark theme and layout
+## [x] T-010 -- Glassmorphism dark theme and layout
+> DONE 2026-03-13 -- Full glass UI: TopBar with search, FilterBar with fuel toggles, dark MapLibre controls, responsive.
 
 **Phase:** 1 (MVP)
 **Component:** Frontend - UI/UX
