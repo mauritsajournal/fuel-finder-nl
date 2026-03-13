@@ -3,6 +3,7 @@
 	import { getStations } from '$lib/stores/data.svelte.js';
 	import { formatPrice, priceDiffText, calculateThresholds } from '$lib/utils/price-colors.js';
 	import { getLocation, hasLocation } from '$lib/stores/location.svelte.js';
+	import { getActivePriceFuelType } from '$lib/stores/filters.svelte.js';
 	import type { FuelType } from '$lib/types.js';
 
 	let station = $derived(getSelected());
@@ -10,14 +11,15 @@
 	let allStations = $derived(getStations());
 	let userLocation = $derived(getLocation());
 	let hasUserLocation = $derived(hasLocation());
+	let activeFuelType = $derived(getActivePriceFuelType());
 
-	// Calculate average prices for comparison
+	// Calculate average prices for comparison based on active fuel type
 	let avgPrices = $derived.by(() => {
-		const thresholds = calculateThresholds(allStations, 'euro95');
+		const thresholds = calculateThresholds(allStations, activeFuelType);
 		if (!thresholds || allStations.length === 0) return null;
 
 		const prices = allStations
-			.map((s) => s.prices.find((p) => p.fuelType === 'euro95')?.price)
+			.map((s) => s.prices.find((p) => p.fuelType === activeFuelType)?.price)
 			.filter((p): p is number => p !== undefined);
 
 		return prices.reduce((sum, p) => sum + p, 0) / prices.length;
@@ -119,7 +121,7 @@
 					<div class="rounded-xl border border-white/5 bg-white/3 px-3 py-2">
 						<span class="text-xs text-slate-400">{fuelLabel(price.fuelType)}</span>
 						<div class="text-base font-semibold text-white">{formatPrice(price.price)}</div>
-						{#if avgPrices !== null && price.fuelType === 'euro95'}
+						{#if avgPrices !== null && price.fuelType === activeFuelType}
 							<span class="text-[10px] text-slate-500">
 								{priceDiffText(price.price, avgPrices)}
 							</span>
