@@ -3,11 +3,16 @@ name: Data Pipeline
 on:
   schedule:
     - cron: '0 */4 * * *'  # Fuel prices every 4 hours
-    - cron: '0 6 * * *'    # POI data daily at 06:00 UTC
+    - cron: '0 6 * * *'    # POI + EV data daily at 06:00 UTC
   workflow_dispatch:
     inputs:
       include_poi:
         description: 'Also fetch POI data'
+        required: false
+        default: 'false'
+        type: boolean
+      include_ev:
+        description: 'Also fetch EV charger data'
         required: false
         default: 'false'
         type: boolean
@@ -48,6 +53,28 @@ jobs:
       - name: Split fuel data into tiles
         run: python scripts/tile_data.py --data-type fuel
 
+      # --- EV charger data (daily or manual) ---
+      - name: Fetch EV charger data from OpenChargeMap
+        id: fetch_ev
+        if: github.event.schedule == '0 6 * * *' || github.event.inputs.include_ev == 'true'
+        run: python scripts/fetch_ev_chargers.py
+        env:
+          OCM_API_KEY: ${{ secrets.OCM_API_KEY }}
+        continue-on-error: true
+
+      - name: Retry EV fetch on failure
+        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_ev == 'true') && steps.fetch_ev.outcome == 'failure'
+        run: |
+          echo "EV fetch failed, retrying in 30s..."
+          sleep 30
+          python scripts/fetch_ev_chargers.py
+        env:
+          OCM_API_KEY: ${{ secrets.OCM_API_KEY }}
+
+      - name: Split EV data into tiles
+        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_ev == 'true') && steps.fetch_ev.outcome == 'success'
+        run: python scripts/tile_data.py --data-type ev
+
       # --- POI data (daily or manual) ---
       - name: Fetch POI data from Overpass
         id: fetch_poi
@@ -71,6 +98,15 @@ jobs:
         run: |
           python scripts/upload_to_r2.py data/output/tiles/fuel --prefix tiles/fuel
           python scripts/upload_to_r2.py data/output --prefix ""
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+
+      - name: Upload EV tiles to R2
+        if: (github.event.schedule == '0 6 * * *' || github.event.inputs.include_ev == 'true') && steps.fetch_ev.outcome == 'success'
+        run: python scripts/upload_to_r2.py data/output/tiles/ev --prefix tiles/ev
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
