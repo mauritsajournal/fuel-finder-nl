@@ -5,11 +5,13 @@
 	import LocateButton from '$lib/components/LocateButton.svelte';
 	import StationPanel from '$lib/components/StationPanel.svelte';
 	import DataHealth from '$lib/components/DataHealth.svelte';
+	import StationMarkers from '$lib/components/StationMarkers.svelte';
 	import POIMarkers from '$lib/components/POIMarkers.svelte';
 	import EVMarkers from '$lib/components/EVMarkers.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import { isElectricFilter } from '$lib/stores/filters.svelte.js';
 	import { resolve } from '$app/paths';
+	import { debouncedLoadTiles, fetchMetadata } from '$lib/stores/data.svelte.js';
 
 	let mapComponent: Map;
 	let mapInstance: import('maplibre-gl').Map | null = $state(null);
@@ -33,6 +35,33 @@
 		}, 200);
 		return () => clearInterval(interval);
 	});
+
+	// Load data when map is ready and on viewport changes
+	$effect(() => {
+		if (!mapInstance) return;
+
+		function loadTilesFromBounds() {
+			if (!mapInstance) return;
+			const b = mapInstance.getBounds();
+			debouncedLoadTiles({
+				north: b.getNorth(),
+				south: b.getSouth(),
+				east: b.getEast(),
+				west: b.getWest()
+			});
+		}
+
+		// Initial load
+		fetchMetadata();
+		loadTilesFromBounds();
+
+		// Reload on viewport change
+		mapInstance.on('moveend', loadTilesFromBounds);
+
+		return () => {
+			mapInstance?.off('moveend', loadTilesFromBounds);
+		};
+	});
 </script>
 
 <svelte:head>
@@ -45,6 +74,9 @@
 <div class="relative h-screen w-screen overflow-hidden bg-[#0c1220]">
 	<!-- Full-screen map background -->
 	<Map bind:this={mapComponent} />
+
+	<!-- Fuel station markers -->
+	<StationMarkers map={mapInstance} />
 
 	<!-- EV charger markers (shown when electric filter active) -->
 	<EVMarkers map={mapInstance} visible={showEV} />
