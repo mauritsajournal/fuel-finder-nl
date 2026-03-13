@@ -673,7 +673,8 @@ Read timestamps from `metadata.json`. Use relative time formatting (Intl.Relativ
 
 ---
 
-## [ ] T-020 -- PWA manifest and service worker
+## [x] T-020 -- PWA manifest and service worker
+> DONE 2026-03-13 -- Manifest, SVG icons (192/512/maskable), service worker with cache-first app shell and network-first data tiles.
 
 **Phase:** 3 (Polish)
 **Component:** Frontend - PWA
