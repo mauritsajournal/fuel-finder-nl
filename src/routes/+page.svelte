@@ -5,13 +5,29 @@
 	import LocateButton from '$lib/components/LocateButton.svelte';
 	import StationPanel from '$lib/components/StationPanel.svelte';
 	import DataHealth from '$lib/components/DataHealth.svelte';
+	import POIMarkers from '$lib/components/POIMarkers.svelte';
 
 	let mapComponent: Map;
+	let mapInstance: import('maplibre-gl').Map | null = $state(null);
+	let showPOI = $state(true);
 
 	function handleLocate(lat: number, lng: number) {
 		mapComponent?.flyTo(lat, lng);
 		mapComponent?.setUserLocation(lat, lng);
 	}
+
+	// Poll for map instance (set after map 'load' event)
+	$effect(() => {
+		if (mapInstance) return;
+		const interval = setInterval(() => {
+			const m = mapComponent?.getMap();
+			if (m) {
+				mapInstance = m;
+				clearInterval(interval);
+			}
+		}, 200);
+		return () => clearInterval(interval);
+	});
 </script>
 
 <svelte:head>
@@ -24,6 +40,9 @@
 <div class="relative h-screen w-screen overflow-hidden bg-[#0c1220]">
 	<!-- Full-screen map background -->
 	<Map bind:this={mapComponent} />
+
+	<!-- POI markers (subdued, zoom > 10 only) -->
+	<POIMarkers map={mapInstance} visible={showPOI} />
 
 	<!-- Glass overlay panels -->
 	<TopBar />

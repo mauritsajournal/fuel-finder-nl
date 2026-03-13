@@ -4,15 +4,17 @@
  * Caches loaded tiles in memory (never re-fetches within session).
  */
 
-import type { FuelStation, Metadata } from '$lib/types.js';
+import type { FuelStation, POI, Metadata } from '$lib/types.js';
 import { getVisibleTileKeys } from '$lib/utils/tiles.js';
 import { env } from '$env/dynamic/public';
 
 // Tile cache: key -> stations
 const tileCache = new Map<string, FuelStation[]>();
+const poiTileCache = new Map<string, POI[]>();
 
 // Reactive state
 let stations = $state<FuelStation[]>([]);
+let pois = $state<POI[]>([]);
 let metadata = $state<Metadata | null>(null);
 let loading = $state(false);
 let error = $state<string | null>(null);
@@ -100,6 +102,49 @@ export async function loadVisibleTiles(bounds: {
 	loading = false;
 }
 
+/** Get all currently loaded POIs */
+export function getPOIs(): POI[] {
+	return pois;
+}
+
+/** Load POI tiles visible in the current viewport */
+export async function loadVisiblePOITiles(bounds: {
+	north: number;
+	south: number;
+	east: number;
+	west: number;
+}): Promise<void> {
+	if (!R2_BASE) return;
+
+	const visibleKeys = getVisibleTileKeys(bounds);
+	const toFetch = visibleKeys.filter((key) => !poiTileCache.has(key));
+
+	if (toFetch.length === 0) return;
+
+	const results = await Promise.allSettled(
+		toFetch.map(async (key) => {
+			const url = `${R2_BASE}/tiles/poi/${key}.json`;
+			const res = await fetch(url);
+			if (!res.ok) {
+				if (res.status === 404) {
+					poiTileCache.set(key, []);
+					return;
+				}
+				throw new Error(`HTTP ${res.status} for POI tile ${key}`);
+			}
+			const data: POI[] = await res.json();
+			poiTileCache.set(key, data);
+		})
+	);
+
+	const failures = results.filter((r) => r.status === 'rejected');
+	if (failures.length > 0) {
+		console.warn(`Failed to load ${failures.length} POI tiles`);
+	}
+
+	pois = Array.from(poiTileCache.values()).flat();
+}
+
 /** Debounced tile loader for map moveend events */
 let debounceTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -110,5 +155,8 @@ export function debouncedLoadTiles(bounds: {
 	west: number;
 }): void {
 	clearTimeout(debounceTimer);
-	debounceTimer = setTimeout(() => loadVisibleTiles(bounds), 300);
+	debounceTimer = setTimeout(() => {
+		loadVisibleTiles(bounds);
+		loadVisiblePOITiles(bounds);
+	}, 300);
 }
