@@ -6,10 +6,13 @@
 	import StationPanel from '$lib/components/StationPanel.svelte';
 	import DataHealth from '$lib/components/DataHealth.svelte';
 	import POIMarkers from '$lib/components/POIMarkers.svelte';
+	import EVMarkers from '$lib/components/EVMarkers.svelte';
+	import { isElectricFilter } from '$lib/stores/filters.svelte.js';
 
 	let mapComponent: Map;
 	let mapInstance: import('maplibre-gl').Map | null = $state(null);
 	let showPOI = $state(true);
+	let showEV = $derived(isElectricFilter());
 
 	function handleLocate(lat: number, lng: number) {
 		mapComponent?.flyTo(lat, lng);
@@ -40,6 +43,9 @@
 <div class="relative h-screen w-screen overflow-hidden bg-[#0c1220]">
 	<!-- Full-screen map background -->
 	<Map bind:this={mapComponent} />
+
+	<!-- EV charger markers (shown when electric filter active) -->
+	<EVMarkers map={mapInstance} visible={showEV} />
 
 	<!-- POI markers (subdued, zoom > 10 only) -->
 	<POIMarkers map={mapInstance} visible={showPOI} />

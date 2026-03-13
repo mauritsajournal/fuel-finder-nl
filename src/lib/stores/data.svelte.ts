@@ -4,16 +4,18 @@
  * Caches loaded tiles in memory (never re-fetches within session).
  */
 
-import type { FuelStation, POI, Metadata } from '$lib/types.js';
+import type { FuelStation, EVCharger, POI, Metadata } from '$lib/types.js';
 import { getVisibleTileKeys } from '$lib/utils/tiles.js';
 import { env } from '$env/dynamic/public';
 
 // Tile cache: key -> stations
 const tileCache = new Map<string, FuelStation[]>();
+const evTileCache = new Map<string, EVCharger[]>();
 const poiTileCache = new Map<string, POI[]>();
 
 // Reactive state
 let stations = $state<FuelStation[]>([]);
+let evChargers = $state<EVCharger[]>([]);
 let pois = $state<POI[]>([]);
 let metadata = $state<Metadata | null>(null);
 let loading = $state(false);
@@ -102,6 +104,49 @@ export async function loadVisibleTiles(bounds: {
 	loading = false;
 }
 
+/** Get all currently loaded EV chargers */
+export function getEVChargers(): EVCharger[] {
+	return evChargers;
+}
+
+/** Load EV charger tiles visible in the current viewport */
+export async function loadVisibleEVTiles(bounds: {
+	north: number;
+	south: number;
+	east: number;
+	west: number;
+}): Promise<void> {
+	if (!R2_BASE) return;
+
+	const visibleKeys = getVisibleTileKeys(bounds);
+	const toFetch = visibleKeys.filter((key) => !evTileCache.has(key));
+
+	if (toFetch.length === 0) return;
+
+	const results = await Promise.allSettled(
+		toFetch.map(async (key) => {
+			const url = `${R2_BASE}/tiles/ev/${key}.json`;
+			const res = await fetch(url);
+			if (!res.ok) {
+				if (res.status === 404) {
+					evTileCache.set(key, []);
+					return;
+				}
+				throw new Error(`HTTP ${res.status} for EV tile ${key}`);
+			}
+			const data: EVCharger[] = await res.json();
+			evTileCache.set(key, data);
+		})
+	);
+
+	const failures = results.filter((r) => r.status === 'rejected');
+	if (failures.length > 0) {
+		console.warn(`Failed to load ${failures.length} EV tiles`);
+	}
+
+	evChargers = Array.from(evTileCache.values()).flat();
+}
+
 /** Get all currently loaded POIs */
 export function getPOIs(): POI[] {
 	return pois;
@@ -157,6 +202,7 @@ export function debouncedLoadTiles(bounds: {
 	clearTimeout(debounceTimer);
 	debounceTimer = setTimeout(() => {
 		loadVisibleTiles(bounds);
+		loadVisibleEVTiles(bounds);
 		loadVisiblePOITiles(bounds);
 	}, 300);
 }
