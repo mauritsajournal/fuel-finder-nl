@@ -1,19 +1,21 @@
 <script lang="ts">
 	import Map from '$lib/components/Map.svelte';
+	import TopBar from '$lib/components/TopBar.svelte';
+	import FilterBar from '$lib/components/FilterBar.svelte';
 </script>
 
 <svelte:head>
-	<title>Fuel Finder NL</title>
+	<title>Fuel Finder NL -- Goedkoopste tankstations</title>
+	<meta property="og:title" content="Fuel Finder NL" />
+	<meta property="og:description" content="Vind de goedkoopste tankstations in Nederland op een interactieve kaart" />
+	<meta property="og:type" content="website" />
 </svelte:head>
 
 <div class="relative h-screen w-screen overflow-hidden bg-[#0c1220]">
-	<!-- Full-screen map -->
+	<!-- Full-screen map background -->
 	<Map />
 
-	<!-- Top bar placeholder -->
-	<div class="pointer-events-none absolute inset-x-0 top-0 z-10 p-4">
-		<div class="glass pointer-events-auto mx-auto flex max-w-lg items-center gap-3 rounded-2xl px-4 py-3">
-			<h1 class="text-base font-semibold text-white">Fuel Finder NL</h1>
-		</div>
-	</div>
+	<!-- Glass overlay panels -->
+	<TopBar />
+	<FilterBar />
 </div>
