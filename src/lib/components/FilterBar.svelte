@@ -1,12 +1,10 @@
 <script lang="ts">
-	import type { FuelType } from '$lib/types.js';
 	import {
 		getActiveFuelType,
 		setActiveFuelType,
 		getSortMode,
 		setSortMode,
-		type FilterType,
-		type SortMode
+		type FilterType
 	} from '$lib/stores/filters.svelte.js';
 	import { hasLocation } from '$lib/stores/location.svelte.js';
 
@@ -63,7 +61,7 @@
 
 		<!-- Fuel type filters -->
 		<div class="glass flex items-center justify-center gap-1.5 rounded-2xl px-3 py-2 sm:gap-2 sm:px-4">
-			{#each filters as filter}
+			{#each filters as filter (filter.id)}
 				<button
 					onclick={() => selectFilter(filter.id)}
 					class="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all duration-200 sm:text-sm

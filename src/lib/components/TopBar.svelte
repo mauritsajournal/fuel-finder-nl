@@ -124,7 +124,7 @@
 					role="listbox"
 					class="glass absolute inset-x-0 top-full z-50 mt-2 overflow-hidden rounded-xl"
 				>
-					{#each results as result, i}
+					{#each results as result, i (i)}
 						<li
 							id="search-result-{i}"
 							role="option"

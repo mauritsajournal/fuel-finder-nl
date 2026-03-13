@@ -9,7 +9,7 @@
 	import EVMarkers from '$lib/components/EVMarkers.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import { isElectricFilter } from '$lib/stores/filters.svelte.js';
-	import { base } from '$app/paths';
+	import { resolve } from '$app/paths';
 
 	let mapComponent: Map;
 	let mapInstance: import('maplibre-gl').Map | null = $state(null);
@@ -66,7 +66,7 @@
 
 	<!-- Privacy link -->
 	<a
-		href="{base}/privacy"
+		href={resolve('/privacy')}
 		class="absolute bottom-16 left-3 z-10 text-[10px] text-slate-600 transition-colors hover:text-slate-400 sm:bottom-3"
 	>
 		Privacy

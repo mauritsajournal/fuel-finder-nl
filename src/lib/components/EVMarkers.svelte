@@ -151,7 +151,7 @@
 			const source = mapInstance.getSource('ev-data') as import('maplibre-gl').GeoJSONSource;
 			try {
 				const zoom = await source.getClusterExpansionZoom(clusterId);
-				const coords = (features[0].geometry as GeoJSON.Point).coordinates;
+				const coords = (features[0].geometry as { type: string; coordinates: number[] }).coordinates;
 				mapInstance.easeTo({
 					center: coords as [number, number],
 					zoom: zoom
@@ -166,7 +166,7 @@
 			if (!e.features || e.features.length === 0) return;
 			const feature = e.features[0];
 			const props = feature.properties;
-			const coords = (feature.geometry as GeoJSON.Point).coordinates;
+			const coords = (feature.geometry as { type: string; coordinates: number[] }).coordinates;
 
 			const operator = props?.operator || 'Onbekend';
 			const maxPwr = props?.maxPowerKW || 0;

@@ -6,7 +6,6 @@
 	 * Only visible at zoom > 10 to avoid clutter at country level.
 	 * Visually subdued compared to fuel/EV markers.
 	 */
-	import { onMount } from 'svelte';
 	import { getPOIs } from '$lib/stores/data.svelte.js';
 	import type { POI } from '$lib/types.js';
 
@@ -103,7 +102,7 @@
 			if (!e.features || e.features.length === 0) return;
 			const feature = e.features[0];
 			const props = feature.properties;
-			const coords = (feature.geometry as GeoJSON.Point).coordinates;
+			const coords = (feature.geometry as { type: string; coordinates: number[] }).coordinates;
 
 			const typeLabels: Record<string, string> = {
 				toilet: 'Toilet',

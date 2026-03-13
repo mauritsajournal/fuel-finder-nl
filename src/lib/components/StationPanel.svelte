@@ -177,7 +177,7 @@
 
 			<!-- Prices -->
 			<div class="mb-4 grid grid-cols-2 gap-2">
-				{#each station.prices as price}
+				{#each station.prices as price (price.fuelType)}
 					<div class="rounded-xl border border-white/5 bg-white/3 px-3 py-2">
 						<span class="text-xs text-slate-400">{fuelLabel(price.fuelType)}</span>
 						<div class="text-base font-semibold text-white">{formatPrice(price.price)}</div>
@@ -203,7 +203,7 @@
 			<!-- Facilities -->
 			{#if station.facilities.length > 0}
 				<div class="mb-4 flex flex-wrap gap-2">
-					{#each station.facilities as facility}
+					{#each station.facilities as facility, i (i)}
 						<span class="rounded-lg border border-white/5 bg-white/3 px-2 py-1 text-xs text-slate-400">
 							{facility}
 						</span>

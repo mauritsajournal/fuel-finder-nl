@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { base } from '$app/paths';
+	import { resolve } from '$app/paths';
 </script>
 
 <svelte:head>
@@ -9,7 +9,7 @@
 <div class="min-h-screen bg-[#0f172a] px-4 py-8 text-slate-300">
 	<div class="mx-auto max-w-2xl">
 		<a
-			href="{base}/"
+			href={resolve('/')}
 			class="mb-6 inline-flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300"
 		>
 			<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">

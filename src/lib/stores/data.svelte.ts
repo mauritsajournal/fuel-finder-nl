@@ -7,11 +7,12 @@
 import type { FuelStation, EVCharger, POI, Metadata } from '$lib/types.js';
 import { getVisibleTileKeys } from '$lib/utils/tiles.js';
 import { env } from '$env/dynamic/public';
+import { SvelteMap } from 'svelte/reactivity';
 
 // Tile cache: key -> stations
-const tileCache = new Map<string, FuelStation[]>();
-const evTileCache = new Map<string, EVCharger[]>();
-const poiTileCache = new Map<string, POI[]>();
+const tileCache = new SvelteMap<string, FuelStation[]>();
+const evTileCache = new SvelteMap<string, EVCharger[]>();
+const poiTileCache = new SvelteMap<string, POI[]>();
 
 // Reactive state
 let stations = $state<FuelStation[]>([]);
