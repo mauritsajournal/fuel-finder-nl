@@ -494,7 +494,8 @@ export default {
 
 ---
 
-## [ ] T-014 -- EV charger markers on map
+## [x] T-014 -- EV charger markers on map
+> DONE 2026-03-13 -- EVMarkers component with green/blue color coding, clustering, popups. Data store extended for EV tiles.
 
 **Phase:** 2 (Full Data)
 **Component:** Frontend - Map
