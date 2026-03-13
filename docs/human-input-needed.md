@@ -6,22 +6,21 @@
 ## Pending Actions
 
 ### H-001: Cloudflare Account Access
-**Status:** Pending
-**Blocker for:** T-003 (R2 setup), T-013 (Worker proxy)
-**Description:** The engineer agent needs access to a Cloudflare account to create an R2 bucket and deploy a Worker. The Cloudflare account used for A-Journal's infrastructure may be suitable, or a separate free account can be created for this personal project.
-**Decision needed:** Which Cloudflare account should be used? Or should a new free account be created?
+**Status:** RESOLVED
+**Resolution:** Use Cloudflare account `douchekonijn@gmail.com`
+**Resolved:** 2026-03-13
 
 ### H-002: OpenRouteService API Key Registration
-**Status:** Pending
-**Blocker for:** T-013 (Worker proxy)
-**Description:** A free API key needs to be registered at https://openrouteservice.org/dev/#/signup. This requires human action (email verification). The key will be stored as a Cloudflare Worker environment variable.
-**Decision needed:** Register and provide the API key.
+**Status:** RESOLVED
+**Resolution:** API key provided. Store as Cloudflare Worker environment variable `ORS_API_KEY`.
+**API Key:** `eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImJlN2Y4YTk4NGY2MjQ0NDBiYTAyZDEyYzdlMTc3ZDQ1IiwiaCI6Im11cm11cjY0In0=`
+**Resolved:** 2026-03-13
 
 ### H-003: OpenChargeMap API Key Registration
-**Status:** Pending
-**Blocker for:** T-011 (EV charger pipeline)
-**Description:** An API key needs to be registered at https://openchargemap.org/site/loginprovider/beginlogin. Required for fetching >250 results. Free.
-**Decision needed:** Register and provide the API key.
+**Status:** RESOLVED
+**Resolution:** API key provided. Use as `key` query parameter in OpenChargeMap API calls.
+**API Key:** `31e10acc-f7cb-49df-b5d4-6f1804cca834`
+**Resolved:** 2026-03-13
 
 ---
 
