@@ -409,7 +409,8 @@ OpenChargeMap API endpoint: `https://api.openchargemap.io/v3/poi/?output=json&co
 
 ---
 
-## [ ] T-012 -- Overpass API POI data pipeline
+## [x] T-012 -- Overpass API POI data pipeline
+> DONE 2026-03-13 -- fetch_poi.py for toilets/rest areas/services, daily cron in data-pipeline.yml.
 
 **Phase:** 2 (Full Data)
 **Component:** Data Pipeline
