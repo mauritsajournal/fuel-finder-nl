@@ -15,6 +15,63 @@
 		return map;
 	}
 
+	/** Fly map to coordinates with animation */
+	export function flyTo(lat: number, lng: number, zoom = 12) {
+		map?.flyTo({ center: [lng, lat], zoom, duration: 1500 });
+	}
+
+	/** Add or update the user location marker (pulsing blue dot) */
+	export function setUserLocation(lat: number, lng: number) {
+		if (!map) return;
+
+		const source = map.getSource('user-location') as import('maplibre-gl').GeoJSONSource | undefined;
+		const geojson = {
+			type: 'FeatureCollection' as const,
+			features: [
+				{
+					type: 'Feature' as const,
+					geometry: { type: 'Point' as const, coordinates: [lng, lat] },
+					properties: {}
+				}
+			]
+		};
+
+		if (source) {
+			source.setData(geojson);
+		} else {
+			map.addSource('user-location', { type: 'geojson', data: geojson });
+
+			// Outer pulse ring
+			map.addLayer({
+				id: 'user-location-pulse',
+				type: 'circle',
+				source: 'user-location',
+				paint: {
+					'circle-radius': 20,
+					'circle-color': '#3b82f6',
+					'circle-opacity': 0.15,
+					'circle-stroke-width': 0,
+					'circle-pitch-alignment': 'map'
+				}
+			});
+
+			// Inner dot
+			map.addLayer({
+				id: 'user-location-dot',
+				type: 'circle',
+				source: 'user-location',
+				paint: {
+					'circle-radius': 6,
+					'circle-color': '#3b82f6',
+					'circle-opacity': 1,
+					'circle-stroke-color': '#ffffff',
+					'circle-stroke-width': 2,
+					'circle-pitch-alignment': 'map'
+				}
+			});
+		}
+	}
+
 	onMount(() => {
 		if (!browser) return;
 
