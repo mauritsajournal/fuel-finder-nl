@@ -444,7 +444,8 @@ Reference: technical-blueprint.md Section 5.4.
 
 ---
 
-## [ ] T-013 -- Cloudflare Worker routing proxy
+## [x] T-013 -- Cloudflare Worker routing proxy
+> DONE (code) 2026-03-13 -- Worker source with /route, /geocode, rate limiting, CORS. Deploy blocked on H-001/H-002.
 
 **Phase:** 2 (Full Data)
 **Component:** Infrastructure
