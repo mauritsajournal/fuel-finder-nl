@@ -40,6 +40,7 @@ jobs:
         env:
           NODE_ENV: production
           PUBLIC_R2_URL: https://pub-9bd166860d1c42758e450c538931ff9f.r2.dev
+          PUBLIC_WORKER_URL: https://fuel-finder-routing.accounts-394.workers.dev
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
