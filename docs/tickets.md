@@ -190,7 +190,8 @@ Reference: technical-blueprint.md Section 3.2.
 
 ---
 
-## [ ] T-006 -- Viewport-based tile loading from R2
+## [x] T-006 -- Viewport-based tile loading from R2
+> DONE 2026-03-13 -- Data store, tile cache, debounced loading, metadata fetch.
 
 **Phase:** 1 (MVP)
 **Component:** Frontend - Data Layer
@@ -226,7 +227,8 @@ Reference: technical-blueprint.md Section 3.6 and 4.2.
 
 ---
 
-## [ ] T-007 -- Fuel station markers with price color-coding
+## [x] T-007 -- Fuel station markers with price color-coding
+> DONE 2026-03-13 -- Price thresholds, color categories, format utils, 22 tests.
 
 **Phase:** 1 (MVP)
 **Component:** Frontend - Map
@@ -260,7 +262,8 @@ Reference: technical-blueprint.md Section 3.2.
 
 ---
 
-## [ ] T-008 -- Station detail slide-up panel
+## [x] T-008 -- Station detail slide-up panel
+> DONE 2026-03-13 -- Glassmorphism panel with prices, address, facilities, navigation links.
 
 **Phase:** 1 (MVP)
 **Component:** Frontend - UI
