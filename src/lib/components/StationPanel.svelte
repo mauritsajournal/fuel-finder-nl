@@ -4,7 +4,20 @@
 	import { formatPrice, priceDiffText, calculateThresholds } from '$lib/utils/price-colors.js';
 	import { getLocation, hasLocation } from '$lib/stores/location.svelte.js';
 	import { getActivePriceFuelType } from '$lib/stores/filters.svelte.js';
+	import {
+		calculateRoute,
+		displayRoute,
+		clearRoute,
+		formatDuration,
+		formatDistance,
+		type RouteResult
+	} from '$lib/services/routing.js';
 	import type { FuelType } from '$lib/types.js';
+
+	interface Props {
+		mapInstance?: import('maplibre-gl').Map | null;
+	}
+	let { mapInstance = null }: Props = $props();
 
 	let station = $derived(getSelected());
 	let visible = $derived(station !== null);
@@ -42,6 +55,53 @@
 	let distance = $derived.by(() => {
 		if (!station || !hasUserLocation || !userLocation.lat || !userLocation.lng) return null;
 		return distanceKm(userLocation.lat, userLocation.lng, station.lat, station.lng);
+	});
+
+	// Route calculation state
+	let routeResult = $state<RouteResult | null>(null);
+	let routeLoading = $state(false);
+	let routeError = $state<string | null>(null);
+
+	async function calculateRouteToStation() {
+		if (!station || !hasUserLocation || !userLocation.lat || !userLocation.lng) {
+			routeError = 'Locatie niet beschikbaar';
+			return;
+		}
+
+		routeLoading = true;
+		routeError = null;
+		routeResult = null;
+
+		try {
+			const result = await calculateRoute(
+				userLocation.lat,
+				userLocation.lng,
+				station.lat,
+				station.lng
+			);
+			routeResult = result;
+
+			// Display route on map
+			if (mapInstance) {
+				displayRoute(mapInstance, result.coordinates);
+			}
+		} catch {
+			routeError = 'Route berekening mislukt';
+		} finally {
+			routeLoading = false;
+		}
+	}
+
+	// Clear route when station changes or panel closes
+	$effect(() => {
+		if (!station) {
+			routeResult = null;
+			routeError = null;
+			routeLoading = false;
+			if (mapInstance) {
+				clearRoute(mapInstance);
+			}
+		}
 	});
 
 	function fuelLabel(type: FuelType): string {
@@ -151,8 +211,57 @@
 				</div>
 			{/if}
 
+			<!-- Route info -->
+			{#if routeResult}
+				<div class="mb-4 flex items-center gap-3 rounded-xl border border-blue-500/20 bg-blue-500/10 px-3 py-2">
+					<svg class="h-5 w-5 shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+					</svg>
+					<div class="flex-1">
+						<span class="text-sm font-medium text-blue-300">
+							{formatDistance(routeResult.distanceM)} &middot; {formatDuration(routeResult.durationS)}
+						</span>
+						{#if routeResult.isFallback}
+							<span class="ml-1 text-[10px] text-slate-500">(schatting)</span>
+						{/if}
+					</div>
+					<button
+						onclick={() => { routeResult = null; if (mapInstance) clearRoute(mapInstance); }}
+						class="text-slate-500 hover:text-white"
+						aria-label="Route wissen"
+					>
+						<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</button>
+				</div>
+			{/if}
+
+			{#if routeError}
+				<div class="mb-4 rounded-xl bg-red-500/10 px-3 py-2 text-sm text-red-400">
+					{routeError}
+				</div>
+			{/if}
+
 			<!-- Action buttons -->
 			<div class="flex gap-2">
+				{#if hasUserLocation}
+					<button
+						onclick={calculateRouteToStation}
+						disabled={routeLoading}
+						class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600/20 py-2.5 text-sm font-medium text-green-400 transition-colors hover:bg-green-600/30 disabled:opacity-50"
+					>
+						{#if routeLoading}
+							<div class="h-4 w-4 animate-spin rounded-full border-2 border-green-400/30 border-t-green-400"></div>
+							Berekenen...
+						{:else}
+							<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+							</svg>
+							Navigeer
+						{/if}
+					</button>
+				{/if}
 				<button
 					onclick={openGoogleMaps}
 					class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600/20 py-2.5 text-sm font-medium text-blue-400 transition-colors hover:bg-blue-600/30"

@@ -57,5 +57,5 @@
 	<FilterBar />
 
 	<!-- Station detail slide-up panel -->
-	<StationPanel />
+	<StationPanel {mapInstance} />
 </div>
