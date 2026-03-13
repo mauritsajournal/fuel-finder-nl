@@ -79,7 +79,8 @@ Use `actions/deploy-pages@v4` with `actions/upload-pages-artifact`. Set `pages` 
 
 ---
 
-## [ ] T-003 -- Cloudflare R2 bucket setup and upload tooling
+## [x] T-003 -- Cloudflare R2 bucket setup and upload tooling
+> DONE (code) 2026-03-13 -- upload_to_r2.py written. R2 bucket creation blocked on H-001.
 
 **Phase:** 1 (MVP)
 **Component:** Infrastructure
@@ -110,7 +111,8 @@ Use `boto3` with S3-compatible endpoint for R2. Cloudflare R2 free tier: 10GB st
 
 ---
 
-## [ ] T-004 -- ANWB fuel prices data pipeline
+## [x] T-004 -- ANWB fuel prices data pipeline
+> DONE (code) 2026-03-13 -- fetch_fuel_prices.py + tile_data.py + data-pipeline.yml. Needs R2 for upload step.
 
 **Phase:** 1 (MVP)
 **Component:** Data Pipeline
