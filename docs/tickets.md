@@ -522,7 +522,8 @@ Reuse tile loading logic from T-006. Add EV as a second data type in the store. 
 
 ---
 
-## [ ] T-015 -- POI markers on map
+## [x] T-015 -- POI markers on map
+> DONE 2026-03-13 -- POIMarkers component with muted circles, zoom-gated, popup on click, data store extended for POI tiles.
 
 **Phase:** 2 (Full Data)
 **Component:** Frontend - Map
