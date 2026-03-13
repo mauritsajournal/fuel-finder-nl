@@ -643,7 +643,8 @@ ORS Geocode API returns GeoJSON FeatureCollection with features containing `prop
 
 ---
 
-## [ ] T-019 -- Data health indicator
+## [x] T-019 -- Data health indicator
+> DONE 2026-03-13 -- DataHealth component with freshness colors, expandable status panel, Dutch text.
 
 **Phase:** 3 (Polish)
 **Component:** Frontend - UI
