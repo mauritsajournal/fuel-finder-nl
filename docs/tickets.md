@@ -294,7 +294,8 @@ Reference: technical-blueprint.md Section 3.3.
 
 ---
 
-## [ ] T-009 -- GPS-based current location
+## [x] T-009 -- GPS-based current location
+> DONE 2026-03-13 -- LocateButton + location store, flyTo, pulsing blue dot, GDPR-compliant.
 
 **Phase:** 1 (MVP)
 **Component:** Frontend - Map
