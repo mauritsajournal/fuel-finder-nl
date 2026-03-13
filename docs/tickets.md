@@ -376,7 +376,8 @@ Test on both light and dark map backgrounds (map style may vary at zoom levels).
 
 ---
 
-## [ ] T-011 -- OpenChargeMap EV charger data pipeline
+## [x] T-011 -- OpenChargeMap EV charger data pipeline
+> DONE 2026-03-13 -- fetch_ev_chargers.py with pagination, connector normalization, status filtering. Integrated into data-pipeline.yml.
 
 **Phase:** 2 (Full Data)
 **Component:** Data Pipeline
