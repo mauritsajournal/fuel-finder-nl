@@ -47,3 +47,12 @@
 - **Notes:** 11 tickets completed. First run on this project — full MVP frontend scaffolded and deployed. SvelteKit 2 + Svelte 5 + Tailwind 4 + MapLibre. 22 tests passing. GitHub Pages live. Data pipeline scripts ready but need R2 bucket. Worker proxy coded but needs Cloudflare account. Remaining frontend tickets (T-014 to T-021) mostly depend on data being available in R2.
 
 ---
+
+## Run Summary -- 2026-03-13 15:15 UTC
+
+- **Tickets completed:** #T-012 (POI data pipeline), #T-015 (POI markers), #T-017 (filter by fuel type), #T-019 (data health indicator), #T-020 (PWA manifest + service worker)
+- **Tickets skipped (blocked):** T-011 (needs H-003 OCM API key), T-014 (needs T-011), T-016 (needs H-001/H-002), T-018 (needs H-001/H-002)
+- **Tickets remaining:** #T-011 (EV chargers), #T-014 (EV markers), #T-016 (route calc), #T-018 (search), #T-021 (polish)
+- **Notes:** 5 tickets completed this run. Total now 16/21 done. POI pipeline added (Overpass API for toilets/rest areas/services), POI markers on map with subdued styling. Filter store created for fuel type switching. Data health component shows freshness with Dutch text. PWA manifest and service worker for installability. 22 tests still passing. 5 remaining tickets are blocked on H-001/H-002/H-003 except T-021 (depends on all others).
+
+---
