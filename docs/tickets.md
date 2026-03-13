@@ -6,7 +6,8 @@
 
 ---
 
-## [ ] T-001 -- Project scaffolding
+## [x] T-001 -- Project scaffolding
+> DONE 2026-03-13 -- SvelteKit 2 + Svelte 5 + Tailwind 4 + Vitest + ESLint + Prettier. Build/test/typecheck pass.
 
 **Phase:** 1 (MVP)
 **Component:** Frontend
