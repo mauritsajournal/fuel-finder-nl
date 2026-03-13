@@ -1,0 +1,51 @@
+name: Data Pipeline
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # Every 4 hours
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-and-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Fetch fuel prices from ANWB
+        id: fetch
+        run: python scripts/fetch_fuel_prices.py
+        continue-on-error: true
+
+      - name: Retry fetch on failure
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          echo "First attempt failed, retrying in 30s..."
+          sleep 30
+          python scripts/fetch_fuel_prices.py
+
+      - name: Split into tiles
+        run: python scripts/tile_data.py --data-type fuel
+
+      - name: Upload to R2
+        run: |
+          python scripts/upload_to_r2.py data/output/tiles/fuel --prefix tiles/fuel
+          python scripts/upload_to_r2.py data/output --prefix ""
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
