@@ -23,6 +23,7 @@
 		"eslint": "^9.0.0",
 		"eslint-plugin-svelte": "^3.0.0",
 		"globals": "^16.0.0",
+		"maplibre-gl": "^5.20.1",
 		"prettier": "^3.0.0",
 		"prettier-plugin-svelte": "^3.0.0",
 		"svelte": "^5.51.0",

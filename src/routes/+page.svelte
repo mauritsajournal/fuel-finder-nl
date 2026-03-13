@@ -1,12 +1,19 @@
+<script lang="ts">
+	import Map from '$lib/components/Map.svelte';
+</script>
+
 <svelte:head>
 	<title>Fuel Finder NL</title>
 </svelte:head>
 
-<div class="flex h-screen w-screen items-center justify-center bg-[#0f172a]">
-	<div class="glass rounded-2xl px-8 py-6 text-center">
-		<h1 class="text-2xl font-bold text-white">Fuel Finder NL</h1>
-		<p class="mt-2 text-sm text-slate-400">
-			Vind de goedkoopste tankstations in Nederland
-		</p>
+<div class="relative h-screen w-screen overflow-hidden bg-[#0c1220]">
+	<!-- Full-screen map -->
+	<Map />
+
+	<!-- Top bar placeholder -->
+	<div class="pointer-events-none absolute inset-x-0 top-0 z-10 p-4">
+		<div class="glass pointer-events-auto mx-auto flex max-w-lg items-center gap-3 rounded-2xl px-4 py-3">
+			<h1 class="text-base font-semibold text-white">Fuel Finder NL</h1>
+		</div>
 	</div>
 </div>
