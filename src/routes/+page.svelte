@@ -51,7 +51,7 @@
 	<POIMarkers map={mapInstance} visible={showPOI} />
 
 	<!-- Glass overlay panels -->
-	<TopBar />
+	<TopBar onSelect={(lat, lng) => mapComponent?.flyTo(lat, lng, 13)} />
 	<LocateButton onLocate={handleLocate} />
 	<DataHealth />
 	<FilterBar />
