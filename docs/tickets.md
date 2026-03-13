@@ -583,7 +583,8 @@ ORS returns GeoJSON geometry. Add as a MapLibre GeoJSON source with a line layer
 
 ---
 
-## [ ] T-017 -- Filter by fuel type and sorting
+## [x] T-017 -- Filter by fuel type and sorting
+> DONE 2026-03-13 -- Shared filters store, fuel type toggle updates price comparisons, sort toggle (cheapest/nearest) with GPS.
 
 **Phase:** 2 (Full Data)
 **Component:** Frontend - UI
