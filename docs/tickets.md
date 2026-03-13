@@ -152,7 +152,8 @@ Reference: `pyfuelprices` library `anwbonderweg.py` for working implementation. 
 
 ---
 
-## [ ] T-005 -- MapLibre map component with dark theme
+## [x] T-005 -- MapLibre map component with dark theme
+> DONE 2026-03-13 -- MapLibre 5.x with custom dark style, OpenFreeMap tiles, NL-bounded.
 
 **Phase:** 1 (MVP)
 **Component:** Frontend - Map
