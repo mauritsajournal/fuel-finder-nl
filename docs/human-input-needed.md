@@ -94,3 +94,14 @@ Also need to set `PUBLIC_R2_URL` in the deploy workflow so the frontend knows wh
 - **Notes:** All 5 remaining tickets completed this run. Total: 21/21 done. EV charger pipeline fetches from OpenChargeMap with pagination and connector normalization. EV markers show green (fast >50kW) vs blue (regular) with clustering and detail popups. Route calculation via Worker proxy with polyline display, caching, and straight-line fallback. Address search with debounced geocoding, keyboard nav, and ARIA accessibility. Polish pass added Toast notifications, privacy page, preconnect hints, dark popup styling, and mobile optimizations. 22 tests passing. Build succeeds. Remaining manual work: deploy Cloudflare Worker (H-006) and configure GitHub Secrets for data pipeline (H-007).
 
 ---
+
+## Run Summary -- 2026-03-13 15:30 UTC
+
+- **Tickets completed:** None (all 21 already done)
+- **Tickets skipped (blocked):** None
+- **Tickets remaining:** None
+- **Bug fixes this run:** Fixed 15 ESLint errors found during site audit: added missing `@eslint/js` dependency, removed unused imports, added `{#each}` keys, replaced `GeoJSON.Point` type casts, switched to `SvelteMap` for reactive stores, and used `resolve()` for navigation links.
+- **Audit results:** Build passes, TypeScript check passes (0 errors, 0 warnings), 22 tests passing, ESLint clean.
+- **Pending manual items:** H-006 (Cloudflare Worker deployment) and H-007 (GitHub Secrets) remain -- these require manual Cloudflare dashboard/CLI access.
+
+---
