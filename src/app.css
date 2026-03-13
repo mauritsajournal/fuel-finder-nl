@@ -114,3 +114,41 @@ body {
 .maplibregl-ctrl-attrib a {
 	color: #94a3b8 !important;
 }
+
+/* Popup styling for dark theme */
+.maplibregl-popup-content {
+	background: rgba(15, 23, 42, 0.95) !important;
+	backdrop-filter: blur(16px) !important;
+	-webkit-backdrop-filter: blur(16px) !important;
+	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+	border-radius: 0.75rem !important;
+	color: #e2e8f0 !important;
+	padding: 0.75rem !important;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+.maplibregl-popup-close-button {
+	color: #94a3b8 !important;
+	font-size: 16px !important;
+	padding: 2px 6px !important;
+}
+
+.maplibregl-popup-close-button:hover {
+	color: #ffffff !important;
+	background: transparent !important;
+}
+
+.maplibregl-popup-tip {
+	border-top-color: rgba(15, 23, 42, 0.95) !important;
+}
+
+/* Smooth transitions for interactive elements */
+button,
+a {
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent overscroll bounce on mobile */
+html {
+	overscroll-behavior: none;
+}
